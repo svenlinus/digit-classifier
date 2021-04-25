@@ -1,0 +1,21 @@
+{
+    "name": "ap-csp-project",
+    "version": "1.0.0",
+    "description": "Digit classifier using a homemade neural network library and the MNIST dataset",
+    "main": "data.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "Neural",
+        "Network",
+        "MNIST",
+        "digit",
+        "classifier"
+    ],
+    "author": "Linus Toernqvist",
+    "license": "ISC",
+    "dependencies": {
+        "http-server": "^0.12.3"
+    }
+}
