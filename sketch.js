@@ -5,6 +5,7 @@ let show = true;
 let epochs = 0;
 const maxEpoch = 5;
 let inputs = [];
+let brain = {};
 
 let costPoints = [];
 let accuracyPoints = [];
@@ -17,19 +18,18 @@ let displayedNum, displayedProb, displayedProbArr, tempLabel;
 
 let colors;
 let maximum = 0;
+let yOff = 8;
+
 
 function setup() {
     textAlign(CENTER, CENTER);
     trainImage = createImage(28, 28);
-    createCanvas(900, 400);
-    background(220);
+    createCanvas(windowWidth, windowHeight);
+    background(25);
     networkImg = loadNetworkImage(64, 64, 10);
     network = new NeuralNetwork(784, 64, 10);
 
-    loadMNIST(function(data) {
-        mnist = data;
-        console.log(mnist);
-    });
+    loadMNIST(data => mnist = data);
 
     colors = [
         color(100, 100, 100),
@@ -48,18 +48,22 @@ function setup() {
 function draw() {
     angleMode(DEGREES);
     textAlign(CENTER, CENTER);
-    background(220);
-    image(networkImg, 440, 3, 400, 400);
-    if(nodeImg) image(nodeImg, 440, 0, 410, 400);
+    // scale(2);
+    background(25);
+    noFill();
+    stroke(50);
+    rect(0, 0, 900, 410);
+    image(networkImg, 440, yOff, 400, 400);
+    if(nodeImg) image(nodeImg, 440, yOff/2, 410, 405);
     strokeWeight(6);
-    stroke(0);
-    line(437, 0, 437, 400);
+    stroke(200);
+    line(437, yOff, 437, 395+yOff);
     strokeWeight(1);
     noStroke();
-    fill(0);
+    fill(230);
     for(let i = 0; i < 10; i ++) {
         textSize(20);
-        text(i, 870, i*30+68);
+        text(i, 870, i*30+66+yOff);
     }
 
     if(mnist && epochs < maxEpoch) {
@@ -77,14 +81,14 @@ function draw() {
             incorrect = 0;
         }
     }
-    fill(255);
-    stroke(0);
+    fill(0);
+    stroke(255);
     rect(100, 200, 300, 200);
     beginShape();
     for(let i = 0; i < costPoints.length; i ++) {
         if(costPoints[i] > maximum) maximum = costPoints[i];
         noFill();
-        stroke(255, 0, 0);
+        stroke(255, 100, 100);
         const x = map(i, 0, costPoints.length-1, 100, 396);
         const y = map(costPoints[i], 0, maximum, 400, 200);
         vertex(x, y);
@@ -94,7 +98,7 @@ function draw() {
     for(let i = 0; i < accuracyPoints.length; i ++) {
         const x = map(i, 0, accuracyPoints.length-1, 100, 396);
         const y = map(accuracyPoints[i], 0, 1, 400, 200);
-        stroke(0, 200, 0);
+        stroke(100, 255, 100);
         vertex(x, y);
     }
     endShape();
@@ -102,32 +106,31 @@ function draw() {
     push();
     translate(0, 30);
     textSize(12);
-    stroke(255);
-    fill(0, 200, 0);
+    noStroke();
+    fill(100, 200, 100);
     rect(10, 235, 10, 10);
     text("ACCURACY ", 60, 240);
-    fill(255, 0, 0);
+    fill(255, 100, 100);
     rect(10, 255, 10, 10);
     text("COST", 42, 260);
     pop();
     if(accuracyPoints.length > 0) {
-        stroke(255);
+        stroke(0);
         textSize(14);
         push();
         translate(396, map(accuracyPoints[accuracyPoints.length-1], 0, 1, 400, 200));
-        fill(0, 200, 0);
+        fill(100, 255, 100);
         ellipse(0, 0, 8, 8);
         text(round(accuracyPoints[accuracyPoints.length-1]*100)+"%", -14, 14);
         pop();
         push();
         translate(396, map(costPoints[costPoints.length-1], 0, maximum, 400, 200));
-        fill(255, 0, 0);
+        fill(255, 100, 100);
         ellipse(0, 0, 8, 8);
         text(round(costPoints[costPoints.length-1]*100)/100, -14, -14);
         pop();
     }
 
-    //+
 
     if(costPoints.length == 50) {
         for(let i = 0; i < 10; i ++) {
@@ -135,6 +138,7 @@ function draw() {
             for(let j = 0; j < 5; j ++) {
                 avgCost += costPoints[j+i];
             }
+            avgCost /= 5;
             costPoints.splice(i, 5, avgCost);
         }
     }
@@ -150,7 +154,7 @@ function draw() {
     }
     
 
-    image(trainImage, 200, 0, 200, 200);
+    image(trainImage, 200, 0, 200, 198);
     fill(0);
     noStroke();
     textSize(45);
@@ -218,14 +222,18 @@ function train(i) {
 }
 
 
+function mouseClicked() {
+    brain.weights_input_hidden = network.wxh.data;
+    brain.hidden_bias = network.hidden_bias[0].data;
+    brain.weights_hidden_output = network.why.data;
+    brain.output_bias = network.output_bias.data;
+    saveJSON(brain, "brain.json");
+}
+
+
 function loadNetworkImage(inputs, hidden, outputs) {
     const size = max(max(inputs, hidden), outputs);
     push();
-    
-    // line(10, 10, 10, 190);
-    // fill(0);
-    // text("784", 10, 200);
-    // line(10, 210, 10, 400);
     for(let i = 0; i < inputs; i ++) {
         for(let j = 0; j < hidden; j ++) {
             const c = random() > 0.5 ? color(255, 100, 100) : color(100, 150, 255);
@@ -248,14 +256,14 @@ function loadNodeImage(hidden, outputs) {
     for(let i = 0; i < hidden.length; i ++) {
         noStroke();
         fill(hidden[i]*255);
-        ellipse(640, i*400/hidden.length+3, 400/hidden.length, 400/hidden.length);
+        ellipse(640, i*400/hidden.length+yOff, 400/hidden.length, 400/hidden.length);
     }
     for(let i = 0; i < outputs.length; i ++) {
         noStroke();
         fill(outputs[i]*255);
-        ellipse(840, i*30+68, 20, 20);
+        ellipse(840, i*30+65+yOff, 20, 20);
     }
-    return get(440, 0, 410, 400);
+    return get(440, yOff/2, 410, 405);
 };
 
 
