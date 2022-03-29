@@ -7,5 +7,7 @@ See the testing: https://www.youtube.com/watch?v=XEJ3NC-UmI4, https://www.youtub
 
 Try it yourself (note: does not work on all devices): https://editor.p5js.org/lankmann/sketches/_J-Zn8bEr
 
-Visualization of neural network weights:
+Visualization of neural network weights: https://editor.p5js.org/lankmann/sketches/HLoY1XDIH
+
+
 ![Neural Network Weights](https://github.com/lankmann/digit-classifier/blob/main/weights.png?raw=true)
