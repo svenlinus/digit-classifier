@@ -5,7 +5,7 @@ See the training: https://www.youtube.com/watch?v=_5KFlXw7r20
 
 See the testing: https://www.youtube.com/watch?v=XEJ3NC-UmI4, https://www.youtube.com/watch?v=Ou_h-c3RcZA
 
-Try it yourself (note: does not work on all devices): https://editor.p5js.org/lankmann/sketches/_J-Zn8bEr
+Try it yourself (note: The image preprocessing step does not work on all devices): https://editor.p5js.org/lankmann/sketches/_J-Zn8bEr
 
 Visualization of neural network weights: https://editor.p5js.org/lankmann/sketches/HLoY1XDIH
 
